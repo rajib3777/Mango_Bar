@@ -1,0 +1,230 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}MANGO BAR{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/yourkit.js" crossorigin="anonymous"></script>
+
+    <!-- Flowbite -->
+    <script src="https://unpkg.com/flowbite@latest/dist/flowbite.min.js"></script>
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+
+    {% comment %} not written {% endcomment %}
+    <style>
+        @keyframes slideInRight {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .slide-right { animation: slideInRight 1s ease-out forwards; }
+            body {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
+            main {
+                flex: 1;
+            }
+    </style>
+
+</head>
+
+<body class="bg-yellow-100 text-green-700 flex flex-col min-h-screen">
+    <!-- Main content of website -->
+    <!--new-->
+    <!-- Sidebar -->
+    <div class="fixed bg-green-800 text-white w-56 min-h-screen overflow-y-auto transition-transform transform -translate-x-full ease-in-out duration-300 z-50"
+        id="sidebar">
+        <!-- Your Sidebar Content -->
+        <div class="p-4">
+            <h1 class="text-2xl mt-10 font-semibold"> MENU</h1>
+            <ul class="mt-4 space-y-2">
+                <li class="mb-2"><a href="#" class="block hover:text-indigo-400">Home</a></li>
+                <li class="mb-2"><a href="#" class="block hover:text-indigo-400">Mangoes</a></li>
+                <li class="mb-2"><a href="#" class="block hover:text-indigo-400">About</a></li>
+                <li class="mb-2"><a href="#" class="block hover:text-indigo-400">Services</a></li>
+                <li class="mb-2"><a href="#" class="block hover:text-indigo-400">Contact</a></li>
+                <li class="mb-2"><a href="#" class="block hover:text-indigo-400">Login</a></li>
+                <li class="mb-2"><a href="#" class="block hover:text-indigo-400">Register</a></li>
+                <li class="mb-2"><a href="#" class="block hover:text-indigo-400">Profile</a></li>
+                <li class="mb-2"><a href="#" class="block hover:text-indigo-400">Settings</a></li>
+                <li class="mb-2"><a href="#" class="block hover:text-indigo-400">Logout</a></li>
+                <li class="mb-2"><a href="#" class="block hover:text-indigo-400">Dashboard</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <nav class="bg-white shadow">
+        <div class="container mx-auto flex justify-between items-center py-4 px-4">
+            <h1 class="text-2xl font-bold text-green-700">MANGO BAR</h1>
+            <button class="text-gray-500 hover:text-gray-600" id="open-sidebar">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    {% comment "hero" %}{% endcomment %}
+    <section class="flex flex-col items-center justify-center p-6">
+        <img src="{% static 'images/mango_logo.png' %}" alt="Mango Bar Logo" class="w-40 h-64 rounded-full">
+        <img src="{% static 'images/man.png' %}" alt="welcome"
+                    class="slide-right w-full max-w-md h-100 object-cover mt-4 overflow-hidden rounded-lg">
+        <h1 class="text-3xl font-bold mt-6">Welcome to MANGO BAR</h1>
+        <p class="mt-4 font-semibold text-black max-w-2xl">Your one-stop destination for the best mangoes in town.</p>
+        <p class="mt-2 font-semibold text-black max-w-2xl">Enjoy our wide range of mango varieties, fresh and delicious, delivered right to your doorstep.</p>
+        <p class="mt-2 font-semibold text-black max-w-2xl">Explore our collection of mangoes, learn about their health benefits, and discover the joy of indulging in nature's sweetest fruit.</p> 
+    </section>
+
+    {% comment "main" %}{% endcomment %}
+    <main class="container mx-auto px-4 py-8 flex-1">
+        {% block content %}
+        {% endblock content %}
+    </main>
+
+    <section class="container mx-auto my-10 px-4" id="facilities">
+        <h2 class="text-center text-3xl font-bold text-green-700 mb-8">About Us</h2>
+        <p class="mt-4 text-black text-lg leading-relaxed">
+            Our mission is to bring you the freshest and most delicious mangoes, ensuring that every bite is a taste of pure joy. Whether you're a mango lover or just discovering this tropical delight, we have something for everyone.
+        </p>
+
+        <div class="relative mt-8">
+            <!-- Vertical line -->
+            <div class="absolute left-1/2 transform -translate-x-1/2 h-full border-l-4 border-green-500"></div>
+
+            <!-- Timeline item 1 -->
+            <div class="mb-10 flex justify-between items-center w-full">
+                <div class="order-1 w-5/12"></div>
+                <div class="order-1 w-5/12 px-6 py-4 bg-white rounded-lg shadow-lg">
+                    <img src="{% static 'images/mango_farm.jpg' %}" alt="Mango Farm" class="w-full h-45 object-cover rounded mb-4">
+                    <h4 class="mb-2 font-bold text-lg text-green-700">Our Mango Farm</h4>
+                    <p class="text-gray-600">Located in the heart of Bangladesh, our farm is dedicated to cultivating the finest mangoes.</p>
+                    <span class="text-sm text-gray-500">Established in 2020</span>
+                </div>
+            </div>
+
+            <!-- Timeline item 2 -->
+            <div class="mb-10 flex justify-between items-center w-full flex-row-reverse">
+                <div class="order-1 w-5/12"></div>
+                <div class="order-1 w-5/12 px-6 py-4 bg-white rounded-lg shadow-lg">
+                    <img src="{% static 'images/quality.jpg' %}" alt="Mango Quality" class="w-full h-45 object-cover rounded mb-4">
+                    <h4 class="mb-2 font-bold text-lg text-green-700">Quality Assurance</h4>
+                    <p class="text-gray-600">We ensure that every mango meets our high standards of quality and freshness.</p>
+                    <span class="text-sm text-gray-500">Ongoing Commitment</span>
+                </div>
+            </div>
+
+            <!-- Timeline item 3 -->
+            <div class="mb-10 flex justify-between items-center w-full">
+                <div class="order-1 w-5/12"></div>
+                <div class="order-1 w-5/12 px-6 py-4 bg-white rounded-lg shadow-lg">
+                    <img src="{% static 'images/custom.jpg' %}" alt="Customer Service" class="w-full h-45 object-cover rounded mb-4">
+                    <h4 class="mb-2 font-bold text-lg text-green-700">Customer Service</h4>
+                    <p class="text-gray-600">Our dedicated team is here to assist you with any inquiries or orders you may have.</p>
+                    <span class="text-sm text-gray-500">Available 24/7</span
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+    <footer class="bg-gradient-to-r from-green-500 to-yellow-500 py-12 text-white">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-5 gap-8">
+
+            {% comment "Brand" %}{% endcomment %}
+            <div>
+                <h2 class="text-3xl font-bold mb-4">MANGO BAR</h2>
+                <p class="mb-4">YOUR BEST CHOICE</p>
+
+                <div class="flex space-x-4">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter-f"></i></a>
+                    <a href="#"><i class="fab fa-linkdin-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram-f"></i></a>
+                </div>
+            </div>
+
+            {% comment "solution" %}{% endcomment %}
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Solutions</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="hover:text-white">DIFFERENT MANGO QUALITIES</a></li>
+                    <li><a href="#" class="hover:text-white"></a>EASY SHIPMENT</li>
+                    <li><a href="#" class="hover:text-white"></a>CHEMICAL FREE</li>
+                </ul>
+            </div>
+
+
+            {% comment "industry" %}{% endcomment %}
+            <div>
+                <h3 class="text-lg font-semibold mb-4">CATEGORIS</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="hover:text-white">LANGDA</a></li>
+                    <li><a href="#" class="hover:text-white"></a>HARIVANGA</li>
+                    <li><a href="#" class="hover:text-white"></a>GOPALVAG</li>
+                </ul>
+            </div>
+
+
+            {% comment "industry" %}{% endcomment %}
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="hover:text-white">Reviews</a></li>
+                    <li><a href="#" class="hover:text-white"></a>Terms & Conditions</li>
+                    <li><a href="#" class="hover:text-white"></a>Disclaime</li>
+                </ul>
+            </div>
+
+            {% comment "industry" %}{% endcomment %}
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Stay Connected</h3>
+                <form class="flex">
+                    <input type="email" placeholder="Enter Email address" class="w-full px-4 py-2 rounded-1 bg-gray-700 border border-gray-600 focus:outline-none">
+                    <button type="submit" class="bg-red-600 px-4 py-2 rounded-r text-white">ORDER NOW</button>
+                </form>
+
+                <div class="mt-6">
+                    <h4 class="font-semibold mb-2">Office Location</h4>
+                    <p class="text-sm mb-2">Dhaka<br>office 195/C,karim Tower,J.N Shaha Road,DH</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-700 mt-8 pt-4 text-center text-sm">
+            &copy 2025 Hermoni.Designed By Studio-X.
+        </div>
+    </footer>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const openSidebarButton = document.getElementById('open-sidebar');
+    
+        openSidebarButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Close the sidebar when clicking outside of it
+        document.addEventListener('click', (e) => {
+            if (!sidebar.contains(e.target) && !openSidebarButton.contains(e.target)) {
+                sidebar.classList.add('-translate-x-full');
+            }
+        });
+    </script>
+</body>
+
+</html>

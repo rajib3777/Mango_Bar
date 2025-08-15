@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body>
+    <section class="bg-gradient-to-r from-green-600 to-yellow-600">
+        <div class="flex flex-col lg:flex-row justify-center min-h-screen">
+            <div class="hidden bg-cover lg:block lg:w-4/5">
+                <img src="{% static 'images/welcome.png' %}" alt="welcome" class="h-full w-full lg:h-full">
+            </div>
+
+            <div class="flex items-center w-full max-w-3xl p-8 mx-auto lg:px-12 lg:w-3/5">
+                <div class="w-full">
+                    <h1 class="text-2xl font-semibold tracking-wider text-gray-800 capitalize dark:text-green-700">
+                        Get your free account now.
+                    </h1>
+
+                    <p class="mt-4 text-white">
+                        Let’s get you all set up so you can verify your personal account and begin setting up your profile.
+                    </p>
+
+                    
+                    
+                    {% if form.non_field_errors %}
+                    <ul class="mt-4 text-white">
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+
+                    <form method="POST" class="grid grid-cols-1 gap-6 mt-8 md:grid-cols-2">
+                        {% csrf_token %}
+
+                        <div class="md:col-span-2 mt-2">
+                            <label for="{{ form.role.id_for_label }}" class="block-mb-2 text-sm text-gray-600 dark:text-gray-200">Select Your Account Type</label>
+                            {{ form.role }}
+                            {% if form.role.errors %}
+                                <ul class="text-sm text-white">
+                                    {% for error in form.role.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+
+
+
+                        {% for field in form %}
+                            {% if field.name != "role" %}
+                                <div>
+                                    <label for="{{ field.id_for_label }}" class="block mb-2 text-sm text-gray-600 dark:text-gray-200">{{ field.label }}</label>
+                                    {{ field.as_widget|safe }}
+                                    {% if field.errors %}
+                                        <ul class="text-sm text-white mt-1">
+                                            {% for error in field.errors %}
+                                                <li class="text-red-500"{{ error }}"></li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+            
+                        <button
+                            class="flex items-center justify-between w-full px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-green-800 rounded-lg hover:bg-green-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
+                            <span>Sign Up </span>
+
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 rtl:-scale-x-100" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </form>
+                    <p class="mt-6 text-center text-sm text-green-700">
+                      Already have an account? <a href="{% url 'sign-in' %}" class="text-white hover:underline font-medium">Sign In</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
+

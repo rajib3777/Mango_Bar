@@ -8,7 +8,7 @@ class CustomUser(AbstractUser):
     
     ROLE_CHOICES = [
         ('customer', 'Customer'),
-        ('vendor', 'Vendor'),
+        ('seller', 'seller'),
     ]
     
     role = models.CharField(
@@ -28,7 +28,7 @@ class CustomUser(AbstractUser):
         max_length=100,
         blank=True,
         null=True,
-        help_text="Required only if you sign up as Vendor"
+        help_text="Required only if you sign up as Seller"
     )
     
     profile_picture = models.ImageField(

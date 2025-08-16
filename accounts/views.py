@@ -16,13 +16,22 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.db.models import Count
-# from mango.models import Product
-# from orders.models import Order
+from products.models import Product
+from orders.models import Order
 from django.db.models import Count, Sum
 from django.views.generic import UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
 from accounts.forms import Profileupdateform
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import update_session_auth_hash
+
+from django.db.models import Q
+from orders.models import CartItem, OrderItem
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.views.generic.edit import FormView
+ 
+
 
 # Create your views here.
 
@@ -134,87 +143,72 @@ def activate_user(request, uidb64 , token):
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 def admin_dashboard(request):
-    # products = Product.objects.all()
-    # total_products = products.count()
-    # total_orders = Order.objects.count()
-    # total_revenue = Order.objects.aggregate(total=Sum('total_amount'))['total'] or 0
+    products = Product.objects.all()
+    total_products = products.count()
+    total_orders = Order.objects.count()
+    total_revenue = Order.objects.aggregate(total=Sum('total_amount'))['total'] or 0
     
 
     context = {
-        # 'products' : products,
-        # 'total_products' :total_products,
-        # 'total_orders' : total_orders,
-        # 'total_revenue' : total_revenue,
+        'products' : products,
+        'total_products' :total_products,
+        'total_orders' : total_orders,
+        'total_revenue' : total_revenue,
         
     }
     return render(request, 'accounts/admin_dashboard.html', context)
 
 
-# @login_required
-# @user_passes_test(lambda u: u.groups.filter(name='Seller').exists())
-# def seller_dashboard(request):
-#     products = Product.objects.filter(seller=request.user)
-#     total_products = products.count()
-#     total_orders = Order.objects.filter(seller=request.user).count()
-#     total_revenue = Order.objects.filter(seller=request.user).aggregate(total=Sum('total_amount'))['total'] or 0
-#     context = {
-#         'products': products,
-#         'total_products': total_products,
-#         'total_orders': total_orders,
-#         'total_revenue': total_revenue,
-#     }
-#     return render(request,'accounts/seller_dashboard.html')
+@login_required
+@user_passes_test(lambda u: u.groups.filter(name='Seller').exists())
+def seller_dashboard(request):
+    products = Product.objects.filter(seller=request.user)
+    total_products = products.count()
+    total_orders = Order.objects.filter(seller=request.user).count()
+    total_revenue = Order.objects.filter(seller=request.user).aggregate(total=Sum('total_amount'))['total'] or 0
+    
+    return render(request,'accounts/seller_dashboard.html', {
+        'products': products,
+        'total_products': total_products,
+        'total_orders': total_orders,
+        'total_revenue': total_revenue,
+    })
 
 
-# @login_required
-# @user_passes_test(lambda u: u.groups.filter(name='Customer').exists())
-# def customer_dashboard(request):
-#     products = Product.objects.all()
-#     total_products = products.count()
-#     total_orders = Order.objects.filter(customer=request.user).count()
-#     total_revenue = Order.objects.filter(customer=request.user).aggregate(total=Sum('total_amount'))['total'] or 0
-#     context = {
-#         'products': products,
-#         'total_products': total_products,
-#         'total_orders': total_orders,
-#         'total_revenue': total_revenue,
-#     }                                                                                     
-#     return render(request,'accounts/customer_dashboard.html')
+@login_required
+@user_passes_test(lambda u: u.groups.filter(name='Customer').exists())
+def customer_dashboard(request):
+    products = Product.objects.all()
+    total_products = products.count()
+    total_orders = Order.objects.filter(customer=request.user).count()                                                                          
+    return render(request,'accounts/customer_dashboard.html',{
+        'products': products,
+        'total_products': total_products,
+        'total_orders': total_orders,
+    })
 
-
-
-
-# @login_required
-# @user_passes_test(lambda u: u.groups.filter(name='Customer').exists())
-# def place_order(request, product_id):
-#     product = get_object_or_404(Product, id=product_id)
-#     if request.method == 'POST':
-#         order = Order.objects.create(customer=request.user, product=product)
-#         messages.success(request, f'Order placed successfully for {product.name}!')
-#         return redirect('customer-dashboard')
-#     return render(request, 'accounts/place_order.html', {'product': product})
 
 
 @login_required
 @user_passes_test(lambda u: u.groups.filter(name='Customer').exists())
 def profile_view(request):
     user = request.user
-    # orders = Order.objects.filter(customer=user)
+    orders = Order.objects.filter(customer=user)
     context = {
         'user': user,
-        # 'orders': orders,
+        'orders': orders,
     }
     return render(request, 'accounts/profile.html', context)
 
 
-# @login_required
-# @user_passes_test(lambda u: u.groups.filter(name='Customer').exists())
-# def my_orders(request):
-#     orders = Order.objects.filter(customer=request.user)
-#     context = {
-#         'orders': orders,
-#     }
-#     return render(request, 'accounts/my_orders.html', context)
+@login_required
+@user_passes_test(lambda u: u.groups.filter(name='Customer').exists())
+def my_orders(request):
+    orders = Order.objects.filter(customer=request.user)
+    context = {
+        'orders': orders,
+    }
+    return render(request, 'accounts/my_orders.html', context)
 
 class Editprofileview(LoginRequiredMixin,SuccessMessageMixin,UpdateView):
     model = CustomUser
@@ -226,36 +220,6 @@ class Editprofileview(LoginRequiredMixin,SuccessMessageMixin,UpdateView):
     def get_object(self):
         return self.request.user
 
-
-class Userpasswordchangeview(LoginRequiredMixin,SuccessMessageMixin,UpdateView): 
-    model = CustomUser
-    form_class = Profileupdateform
-    template_name = 'accounts/change_password.html'
-    success_url = reverse_lazy('profile')
-    success_message = "Password changed Successfully"
-    
-    def get_object(self):
-        return self.request.user
-    
-class Userpasswordresetview(SuccessMessageMixin, UpdateView):
-    model = CustomUser
-    form_class = Profileupdateform
-    template_name = 'accounts/reset_password.html'
-    success_url = reverse_lazy('profile')
-    success_message = "Password reset link sent to your email"
-    
-    def get_object(self):
-        return self.request.user
-    
-class Userpasswordresetconfirmview(SuccessMessageMixin, UpdateView):
-    model = CustomUser
-    form_class = Profileupdateform
-    template_name = 'accounts/reset_password_confirm.html'
-    success_url = reverse_lazy('profile')
-    success_message = "Password reset successfully"
-    
-    def get_object(self):
-        return self.request.user
     
 def reset_password(request):
     if request.method == 'POST':
@@ -287,11 +251,17 @@ def reset_password_confirm(request, uidb64, token):
         if default_token_generator.check_token(user, token):
             if request.method == 'POST':
                 new_password = request.POST.get('new_password')
-                user.set_password(new_password)
-                user.save()
-                messages.success(request, 'Password reset successfully.')
-                return redirect('sign-in')
+                confirm_password = request.POST.get('confirm_password')
+                
+                if new_password == confirm_password:
+                    user = user.objects.get(id=uid)
+                    user.set_password(new_password)
+                    user.save()
+                    return redirect('sign-in')
+                else:
+                    messages.error(request, 'Passwords do not match.')
             return render(request, 'accounts/reset_password_confirm.html', {'user': user})
+            
         else:
             messages.error(request, 'Invalid token or user ID.')
             return redirect('reset-password')
@@ -299,39 +269,36 @@ def reset_password_confirm(request, uidb64, token):
         messages.error(request, 'User not found.')
         return redirect('reset-password')
     
-# @login_required
-# @user_passes_test(lambda u: u.groups.filter(name='Customer').exists())
-# def order_history(request):
-#     orders = Order.objects.filter(customer=request.user)
-#     context = {
-#         'orders': orders,
-#     }
-#     return render(request, 'accounts/order_history.html', context)
+    
+class EditProfileView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = CustomUser
+    form_class = Profileupdateform
+    template_name = 'accounts/edit_profile.html'
+    success_url = reverse_lazy('profile')
+    success_message = "Profile updated successfully"
 
-# @login_required
-# @user_passes_test(lambda u: u.groups.filter(name='Seller').exists())
-# def seller_orders(request):
-#     orders = Order.objects.filter(seller=request.user)
-#     context = {
-#         'orders': orders,
-#     }
-#     return render(request, 'accounts/seller_orders.html', context)
+    def get_object(self):
+        return self.request.user
 
-# @login_required
-# @user_passes_test(lambda u: u.groups.filter(name='Customer').exists())
-# def customer_orders(request):
-#     orders = Order.objects.filter(customer=request.user)
-#     context = {
-#         'orders': orders,
-#     }
-#     return render(request, 'accounts/customer_orders.html', context)
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, self.success_message)
+        return response
 
-# @login_required
-# @user_passes_test(lambda u: u.groups.filter(name='Customer').exists())
-# def my_orders(request):
-#     orders = Order.objects.filter(customer=request.user)
-#     context = {
-#         'orders': orders,
-#     }
-#     return render(request, 'accounts/my_orders.html', context)
 
+class UserPasswordChangeView(LoginRequiredMixin, SuccessMessageMixin, FormView):
+    form_class = PasswordChangeForm
+    template_name = 'accounts/change_password.html'
+    success_url = reverse_lazy('profile')
+    success_message = "Password changed successfully"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        user = form.save()
+        update_session_auth_hash(self.request, user)
+        messages.success(self.request, self.success_message)
+        return super().form_valid(form)

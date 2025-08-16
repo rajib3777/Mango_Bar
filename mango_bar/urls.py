@@ -6,18 +6,8 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
-    path('api/', include('api.urls')),
-    path('api/products/', include('products.urls')),
-    path('api/orders/', include('orders.urls')),
-    path('api/cart/', include('cart.urls')),
     
-    
-    path('mango/', include('mango.urls')),
-    path('orders/', include('orders.urls')),
-    path('dashboard/', include('dashboard.urls')),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    
-    path('api-token-auth/', include('rest_framework.authtoken.urls')),
+ 
 ]
 
 if settings.DEBUG:

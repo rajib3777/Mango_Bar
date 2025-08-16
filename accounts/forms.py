@@ -19,8 +19,8 @@ class CustomRegistrationForm(forms.ModelForm):
         help_text="Required only if you sign up as Seller"
     )
     
-    password1 = forms.CharField(widget=forms.PasswordInput)
-    confirm_password = forms.CharField(widget=forms.PasswordInput)
+    password1 = forms.CharField(widget=forms.PasswordInput())
+    confirm_password = forms.CharField(widget=forms.PasswordInput())
     class Meta:
         model = CustomUser
         fields = ['username', 'first_name', 'last_name',

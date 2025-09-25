@@ -1,7 +1,9 @@
 from django import forms
 import re
 from django.contrib.auth.forms import UserCreationForm
-from accounts.models import CustomUser
+from accounts.models import CustomUser,CustomerProfile
+from products.models import Product
+
 
 
 
@@ -89,7 +91,7 @@ class CustomRegistrationForm(forms.ModelForm):
 class Profileupdateform(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ['first_name', 'last_name', 'email', 'username', 'role','contact_number','profile_picture']
+        fields = ['first_name', 'last_name', 'email', 'username', 'role','contact_number','profile_picture','address','birth_date']
     
     def __init__(self,*args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -97,8 +99,83 @@ class Profileupdateform(forms.ModelForm):
             field.widget.attrs.update({
                 'class': 'block w-full px-4 py-2 mt-2 text-black bg-white border border-black rounded-md focus:border-blue-500 focus:outline-none focus_ring'
             })
+            
+            
+class StockUpdateForm(forms.Form):
     
+    delta = forms.IntegerField(
+        label="Add Quantity",
+        min_value=1,
+        widget=forms.NumberInput(attrs={
+            "class": "form-control",
+            "placeholder": "Enter quantity to add"
+        })
+    )
+        
+class ProductQuickForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['name', 'price', 'quantity', 'description', 'category', 'image']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter product name'
+            }),
+            'price': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter product price',
+                'step': '0.01',
+                'min': '0'
+            }),
+            
+            'quantity': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter available quantity',
+                'min': '0'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': forms.Textarea,
+                'placeholder': 'Enter product description',
+                'rows': 3
+            }),
+            'category': forms.Select(attrs={
+                'class': 'form-control'
+                
+            }),
+            'image': forms.ClearableFileInput(attrs={
+                'class': 'form-control'
+            }),
+        }
+        labels = {
+            'name': 'Product Name',
+            'price': 'Price',
+            'quantity': 'Available Stock',
+            'description': 'Description',
+            'category': 'Category',
+            'image': 'Product Image',
+        }
 
-    
-    
-    
+
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['first_name', 'last_name', 'username', 'email', 'contact_number','profile_picture','address','birth_date']
+
+class CustomerProfileForm(forms.ModelForm):
+    class Meta:
+        model = CustomerProfile
+        fields = ['address', 'email_address', 'birth_date']
+        widgets = {
+            'address': forms.Textarea(attrs={'rows': 3}),
+        }   
+
+
+class ResetPasswordForm(forms.Form):
+    email = forms.EmailField(
+        label="Email address",
+        max_length=254,
+        widget=forms.EmailInput(attrs={
+            'class': 'w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow',
+            'placeholder': 'Enter your email address'
+        })
+    )

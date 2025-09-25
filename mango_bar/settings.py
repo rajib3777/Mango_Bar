@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from django.urls import reverse_lazy
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +27,7 @@ SECRET_KEY = 'django-insecure-iwsq$8l8+6*nh#!8lmabf9=_y4$m=i#b9_qbu!imqol1t*(%k)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.vercel.app']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -42,7 +44,8 @@ INSTALLED_APPS = [
     'accounts',
     'products',
     'orders',
-    'dashboard',
+    'widget_tweaks',
+    'cart',
 ]
 
 MIDDLEWARE = [
@@ -158,3 +161,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ]
 }
+
+LOGIN_URL = reverse_lazy('sign-in')
+LOGIN_REDIRECT_URL = reverse_lazy('profile')
+LOGOUT_REDIRECT_URL = reverse_lazy('sign-in')

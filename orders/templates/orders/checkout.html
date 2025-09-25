@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4 text-center">Checkout</h2>
+
+    <!-- Cart Items Summary -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Your Order Summary</h5>
+        </div>
+        <div class="card-body">
+            {% if cart.items.all %}
+                <table class="table table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart.items.all %}
+                        <tr>
+                            <td>{{ item.product.name }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>${{ item.product.price }}</td>
+                            <td>${{ item.product.price|floatformat:2|add:item.quantity|floatformat:2 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="d-flex justify-content-end">
+                    <h5 class="me-3">Total Amount:</h5>
+                    <h5 class="text-success">
+                        ${{ cart.items.all|calc_total }}
+                    </h5>
+                </div>
+            {% else %}
+                <p class="text-muted">Your cart is empty.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Payment Section -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0">Payment Method</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{% url 'checkout' cart.id %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="paymentMethod" class="form-label">Choose a payment option:</label>
+                    <select class="form-select" id="paymentMethod" name="payment_method" required>
+                        <option value="">-- Select Payment Method --</option>
+                        <option value="cod">Cash on Delivery</option>
+                        <option value="card">Credit/Debit Card</option>
+                        <option value="bkash">bKash</option>
+                        <option value="nagad">Nagad</option>
+                    </select>
+                </div>
+
+                <!-- Card Payment Extra Fields (Show only if card selected, you can handle with JS later) -->
+                <div id="cardInfo" class="d-none">
+                    <div class="mb-3">
+                        <label for="cardNumber" class="form-label">Card Number</label>
+                        <input type="text" class="form-control" id="cardNumber" name="card_number">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="expiry" class="form-label">Expiry Date</label>
+                            <input type="text" class="form-control" id="expiry" name="expiry" placeholder="MM/YY">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="cvv" class="form-label">CVV</label>
+                            <input type="text" class="form-control" id="cvv" name="cvv">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-success btn-lg">Place Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Show card details form only when "Card" is selected
+    const paymentSelect = document.getElementById("paymentMethod");
+    const cardInfo = document.getElementById("cardInfo");
+
+    paymentSelect.addEventListener("change", function() {
+        if (this.value === "card") {
+            cardInfo.classList.remove("d-none");
+        } else {
+            cardInfo.classList.add("d-none");
+        }
+    });
+</script>
+{% endblock %}

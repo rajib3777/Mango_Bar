@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% load static %}
+{% load order_extras %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6 mt-8">
+  <!-- Profile Picture + Username -->
+  <div class="flex items-center space-x-6">
+    {% if user.profile_picture %}
+      <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="w-28 h-28 rounded-full object-cover border">
+    {% else %}
+      <img src="{% static 'images/IMG_0462.jpg' %}" alt="Default Profile" class="w-28 h-28 rounded-full object-cover border">
+    {% endif %}
+    <div>
+      <h1 class="text-2xl font-bold">{{ user.username }}</h1>
+      <p class="text-gray-600">Role: <span class="font-medium">{{ user.role }}</span></p>
+    </div>
+  </div>
+
+  <hr class="my-6">
+
+  <!-- Account Info -->
+  <div>
+    <h2 class="text-xl font-semibold mb-4">📌 Account Information</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <p><span class="font-medium">Full Name:</span> {{ user.first_name }} {{ user.last_name }}</p>
+        <p><span class="font-medium">Username:</span> {{ user.username }}</p>
+        <p><span class="font-medium">Email (Login):</span> {{ user.email }}</p>
+        <p><span class="font-medium">Contact Number:</span> {{ user.contact_number|default:"N/A" }}</p>
+      </div>
+      <div>
+        <p><span class="font-medium">Date Joined:</span> {{ user.date_joined|date:"M d, Y" }}</p>
+        <p><span class="font-medium">Last Login:</span> {{ user.last_login|date:"M d, Y H:i" }}</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="my-6">
+
+  <!-- Customer Profile Info -->
+  <div>
+    <h2 class="text-xl font-semibold mb-4">🏡 Customer Profile</h2>
+    {% if profile %}
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <p><span class="font-medium">Address:</span> {{ profile.address|default:"Not provided" }}</p>
+          <p><span class="font-medium">Birth Date:</span> {{ profile.birth_date|date:"M d, Y"|default:"Not provided" }}</p>
+        </div>
+        <div>
+          <p><span class="font-medium">Email Address:</span> {{ profile.email_address|default:"Not provided" }}</p>
+        </div>
+      </div>
+    {% else %}
+      <p class="text-gray-500">No customer profile details available.</p>
+    {% endif %}
+  </div>
+
+  <hr class="my-6">
+
+  <!-- Actions -->
+  <div class="flex space-x-4">
+    <a href="{% url 'edit-profile' %}" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">Edit Profile</a>
+    <a href="{% url 'change-password' %}" class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">Change Password</a>
+  </div>
+</div>
+
+<div class="container mx-auto py-10">
+    <!-- Overview Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
+        <div class="bg-white p-6 rounded-xl shadow-md text-center">
+            <h2 class="text-lg font-semibold text-gray-700">Total Orders</h2>
+            <p class="text-3xl font-bold text-green-700">{{ total_orders }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-md text-center">
+            <h2 class="text-lg font-semibold text-gray-700">Total Spent</h2>
+            <p class="text-3xl font-bold text-green-700">${{ total_spent|default:"0.00" }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-md text-center">
+            <h2 class="text-lg font-semibold text-gray-700">Pending Orders</h2>
+            <p class="text-3xl font-bold text-yellow-600">{{ pending_orders }}</p>
+        </div>
+    </div>
+
+    <!-- Recent Orders -->
+    <div class="mb-12">
+        <h2 class="text-2xl font-semibold mb-4 text-green-700">📦 Recent Orders (Last 30 Days)</h2>
+        {% if new_orders %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {% for order in new_orders %}
+                    <div class="p-5 bg-white rounded-xl shadow-md hover:shadow-lg transition">
+                        <h3 class="text-lg font-semibold">Order #{{ order.id }}</h3>
+                        <p class="text-gray-600">Date: {{ order.created_at|date:"M d, Y H:i" }}</p>
+                        <p class="text-gray-600">Status: 
+                            <span class="px-2 py-1 rounded text-white {% if order.status == 'Pending' %} bg-yellow-500 {% elif order.status == 'Completed' %} bg-green-600 {% else %} bg-gray-500 {% endif %}">
+                                {{ order.status }}
+                            </span>
+                        </p>
+                        <h4 class="mt-3 font-medium">Items:</h4>
+                        <ul class="list-disc ml-6 text-gray-700">
+                            {% for item in order.items.all %}
+                                <li>{{ item.product.name }} (x{{ item.quantity }}) - ${{ item.price_per_item }}</li>
+                            {% endfor %}
+                        </ul>
+                        <a href="{% url 'order_detail' order.id %}" 
+                           class="mt-4 inline-block bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">
+                           🔍 View Details
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-gray-500 italic">No recent orders found.</p>
+        {% endif %}
+    </div>
+
+    <!-- Older Orders -->
+    <div>
+        <h2 class="text-2xl font-semibold mb-4 text-green-700">🗂️ Older Orders</h2>
+        {% if previous_orders %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {% for order in previous_orders %}
+                    <div class="p-5 bg-gray-100 rounded-xl shadow-md hover:shadow-lg transition">
+                        <h3 class="text-lg font-semibold">Order #{{ order.id }}</h3>
+                        <p class="text-gray-600">Date: {{ order.created_at|date:"M d, Y H:i" }}</p>
+                        <p class="text-gray-600">Status: 
+                            <span class="px-2 py-1 rounded text-white {% if order.status == 'Pending' %} bg-yellow-500 {% elif order.status == 'Completed' %} bg-green-600 {% else %} bg-gray-500 {% endif %}">
+                                {{ order.status }}
+                            </span>
+                        </p>
+                        <h4 class="mt-3 font-medium">Items:</h4>
+                        <ul class="list-disc ml-6 text-gray-700">
+                            {% for item in order.items.all %}
+                                <li>{{ item.product.name }} (x{{ item.quantity }}) - ${{ item.price_per_item }}</li>
+                            {% endfor %}
+                        </ul>
+                        <a href="{% url 'order_detail' order.id %}" 
+                           class="mt-4 inline-block bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-900">
+                           🔍 View Details
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-gray-500 italic">No older orders found.</p>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock content %}
+

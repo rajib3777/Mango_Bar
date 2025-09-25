@@ -1,47 +1,47 @@
 [
     {
-        "model": "mango.mangocategory",
+        "model": "products.Category",
         "pk": 1,
-        "fields": { "name": "Premium" }
+        "fields": { "name": "Premium", "slug": "premium" }
     },
     {
-        "model": "mango.mangocategory",
+        "model": "products.Category",
         "pk": 2,
-        "fields": { "name": "Standard" }
+        "fields": { "name": "Standard", "slug": "standard" }
     },
     {
-        "model": "mango.mangocategory",
+        "model": "products.Category",
         "pk": 3,
-        "fields": { "name": "Organic" }
+        "fields": { "name": "Organic", "slug": "organic" }
     },
     {
-        "model": "mango.mangocategory",
+        "model": "products.Category",
         "pk": 4,
-        "fields": { "name": "Raw" }
+        "fields": { "name": "Raw", "slug": "raw" }
     },
     {
-        "model": "mango.mangocategory",
+        "model": "products.Category",
         "pk": 5,
-        "fields": { "name": "Gift" }
+        "fields": { "name": "Gift", "slug": "gift" }
     },
     {
-        "model": "mango.mangocategory",
+        "model": "products.Category",
         "pk": 6,
-        "fields": { "name": "Processed" }
+        "fields": { "name": "Processed", "slug": "processed" }
     },
     {
-        "model": "mango.mangocategory",
+        "model": "products.Category",
         "pk": 7,
-        "fields": { "name": "Specialty" }
+        "fields": { "name": "Specialty" , "slug": "specialty" }
     },
     {
-        "model": "mango.mangocategory",
+        "model": "products.Category",
         "pk": 8,
-        "fields": { "name": "Seasonal" }
+        "fields": { "name": "Seasonal", "slug": "seasonal" }
     },
 
     {
-        "model": "mango.product",
+        "model": "products.Product",
         "pk": 1,
         "fields": {
             "name": "Himsagar Mango",
@@ -49,12 +49,12 @@
             "price": "350.00",
             "quantity": 100,
             "category": 1,
-            "image": "products/himsagar.jpg",
+            "image": "images/himsha.jpg",
             "created_at": "2025-08-15T10:00:00Z"
         }
     },
     {
-        "model": "mango.product",
+        "model": "products.Product",
         "pk": 2,
         "fields": {
             "name": "Langra Mango",
@@ -62,12 +62,13 @@
             "price": "300.00",
             "quantity": 120,
             "category": 1,
-            "image": "products/langra.jpg",
-            "created_at": "2025-08-15T10:05:00Z"
+            "image": "images/langra.jpeg",
+            "created_at": "2025-08-15T10:05:00Z",
+            "updated_at": "2025-08-15T10:05:00Z"
         }
     },
     {
-        "model": "mango.product",
+        "model": "products.Product",
         "pk": 3,
         "fields": {
             "name": "Surjapuri Mango",
@@ -75,14 +76,15 @@
             "price": "400.00",
             "quantity": 60,
             "category": 1,
-            "image": "products/surjapuri.jpg",
-            "created_at": "2025-08-15T10:08:00Z"
+            "image": "images/surja.jpg",
+            "created_at": "2025-08-15T10:08:00Z",
+            "updated_at": "2025-08-15T10:08:00Z"
         }
     },
 
     
     {
-        "model": "mango.product",
+        "model": "products.Product",
         "pk": 4,
         "fields": {
             "name": "Amrapali Mango",
@@ -90,12 +92,13 @@
             "price": "280.00",
             "quantity": 150,
             "category": 2,
-            "image": "products/amrapali.jpg",
-            "created_at": "2025-08-15T10:10:00Z"
+            "image": "images/amrapal.jpg",
+            "created_at": "2025-08-15T10:10:00Z",
+            "updated_at": "2025-08-15T10:10:00Z"
         }
     },
     {
-        "model": "mango.product",
+        "model": "products.Product",
         "pk": 5,
         "fields": {
             "name": "Fazli Mango",
@@ -103,12 +106,13 @@
             "price": "250.00",
             "quantity": 80,
             "category": 2,
-            "image": "products/fazli.jpg",
-            "created_at": "2025-08-15T10:15:00Z"
+            "image": "images/fazli.jpg",
+            "created_at": "2025-08-15T10:15:00Z",
+            "updated_at": "2025-08-15T10:15:00Z"
         }
     },
     {
-        "model": "mango.product",
+        "model": "products.Product",
         "pk": 6,
         "fields": {
             "name": "Gopalbhog Mango",
@@ -116,14 +120,15 @@
             "price": "270.00",
             "quantity": 95,
             "category": 2,
-            "image": "products/gopalbhog.jpg",
-            "created_at": "2025-08-15T10:18:00Z"
+            "image": "images/quality.jpg",
+            "created_at": "2025-08-15T10:18:00Z",
+            "updated_at": "2025-08-15T10:18:00Z"
         }
     },
 
 
     {
-        "model": "mango.product",
+        "model": "products.Product",
         "pk": 7,
         "fields": {
             "name": "Chemical-Free Mango Pack",
@@ -131,27 +136,13 @@
             "price": "500.00",
             "quantity": 50,
             "category": 3,
-            "image": "products/chemical_free_pack.jpg",
-            "created_at": "2025-08-15T10:20:00Z"
+            "image": "images/mango_farm.jpg",
+            "created_at": "2025-08-15T10:20:00Z",
+            "updated_at": "2025-08-15T10:20:00Z"
         }
     },
     {
-        "model": "mango.product",
-        "pk": 8,
-        "fields": {
-            "name": "Organic Himsagar",
-            "description": "Himsagar mango grown without chemical fertilizers or pesticides.",
-            "price": "420.00",
-            "quantity": 40,
-            "category": 3,
-            "image": "products/organic_himsagar.jpg",
-            "created_at": "2025-08-15T10:23:00Z"
-        }
-    },
-
- 
-    {
-        "model": "mango.product",
+        "model": "products.Product",
         "pk": 9,
         "fields": {
             "name": "Green Mango (Pickle Special)",
@@ -159,26 +150,13 @@
             "price": "150.00",
             "quantity": 200,
             "category": 4,
-            "image": "products/green_mango.jpg",
-            "created_at": "2025-08-15T10:25:00Z"
+            "image": "images/green.png",
+            "created_at": "2025-08-15T10:25:00Z",
+            "updated_at": "2025-08-15T10:25:00Z"
         }
     },
     {
-        "model": "mango.product",
-        "pk": 10,
-        "fields": {
-            "name": "Tender Raw Mango",
-            "description": "Young raw mangoes with extra tangy flavor, perfect for chutneys.",
-            "price": "140.00",
-            "quantity": 180,
-            "category": 4,
-            "image": "products/tender_raw_mango.jpg",
-            "created_at": "2025-08-15T10:27:00Z"
-        }
-    },
-
-    {
-        "model": "mango.product",
+        "model": "products.Product",
         "pk": 11,
         "fields": {
             "name": "Eco-Friendly Mango Gift Box",
@@ -186,51 +164,55 @@
             "price": "800.00",
             "quantity": 30,
             "category": 5,
-            "image": "products/mango_gift_box.jpg",
-            "created_at": "2025-08-15T10:30:00Z"
+            "image": "images/gift.jpg",
+            "created_at": "2025-08-15T10:30:00Z",
+            "updated_at": "2025-08-15T10:30:00Z"
         }
     },
     {
-        "model": "mango.product",
+        "model": "products.Product",
         "pk": 12,
         "fields": {
             "name": "Luxury Mango Hamper",
             "description": "Assorted premium mangoes in a luxury hamper for special occasions.",
             "price": "1200.00",
             "quantity": 20,
-            "category": 5,
-            "image": "products/luxury_mango_hamper.jpg",
-            "created_at": "2025-08-15T10:33:00Z"
+            "category": 3,
+            "image": "images/lux.jpg",
+            "created_at": "2025-08-15T10:33:00Z",
+            "updated_at": "2025-08-15T10:33:00Z"
         }
     },
     {
-        "model": "mango.product",
+        "model": "products.Product",
         "pk": 13,
         "fields": {
             "name": "Mango Smoothie Pack",
             "description": "A pack of fresh mangoes perfect for making smoothies and shakes.",
             "price": "350.00",
             "quantity": 75,
-            "category": 5,
-            "image": "products/mango_smoothie_pack.jpg",
-            "created_at": "2025-08-15T10:35:00Z"
+            "category": 2,
+            "image": "images/smoth.png",
+            "created_at": "2025-08-15T10:35:00Z",
+            "updated_at": "2025-08-15T10:35:00Z"
         }
     },
     {
-        "model": "mango.product",
+        "model": "products.Product",
         "pk": 14,
         "fields": {
             "name": "Mango Pulp",
             "description": "Pure mango pulp, ideal for desserts and beverages.",
             "price": "200.00",
             "quantity": 100,
-            "category": 5,
-            "image": "products/mango_pulp.jpg",
-            "created_at": "2025-08-15T10:38:00Z"
+            "category": 4,
+            "image": "images/pulp.png",
+            "created_at": "2025-08-15T10:38:00Z",
+            "updated_at": "2025-08-15T10:38:00Z"
         }
     },
     {
-        "model": "mango.product",
+        "model": "products.Product",
         "pk": 15,
         "fields": {
             "name": "Mango Chutney",
@@ -238,12 +220,13 @@
             "price": "180.00",
             "quantity": 90,
             "category": 5,
-            "image": "products/mango_chutney.jpg",
-            "created_at": "2025-08-15T10:40:00Z"
+            "image": "images/chutney.png",
+            "created_at": "2025-08-15T10:40:00Z",
+            "updated_at": "2025-08-15T10:40:00Z"
         }
     },
     {
-        "model": "mango.product",
+        "model": "products.Product",
         "pk": 16,
         "fields": {
             "name": "Mango Jam",
@@ -251,12 +234,13 @@
             "price": "160.00",
             "quantity": 110,
             "category": 5,
-            "image": "products/mango_jam.jpg",
-            "created_at": "2025-08-15T10:42:00Z"
+            "image": "images/jam.png",
+            "created_at": "2025-08-15T10:42:00Z",
+            "updated_at": "2025-08-15T10:42:00Z"
         }
     },
     {
-        "model": "mango.product",
+        "model": "products.Product",
         "pk": 17,
         "fields": {
             "name": "Mango Sorbet",
@@ -264,12 +248,13 @@
             "price": "220.00",
             "quantity": 65,
             "category": 5,
-            "image": "products/mango_sorbet.jpg",
-            "created_at": "2025-08-15T10:45:00Z"
+            "image": "images/sorbat.png",
+            "created_at": "2025-08-15T10:45:00Z",
+            "updated_at": "2025-08-15T10:45:00Z"
         }
     },
     {
-        "model": "mango.product",
+        "model": "products.Product",
         "pk": 18,
         "fields": {
             "name": "Mango Juice",
@@ -277,12 +262,13 @@
             "price": "120.00",
             "quantity": 130,
             "category": 5,
-            "image": "products/mango_juice.jpg",
-            "created_at": "2025-08-15T10:48:00Z"
+            "image": "images/juice.png",
+            "created_at": "2025-08-15T10:48:00Z",
+            "updated_at": "2025-08-15T10:48:00Z"
         }
     },
     {
-        "model": "mango.product",
+        "model": "products.Product",
         "pk": 19,
         "fields": {
             "name": "Mango Ice Cream",
@@ -290,12 +276,13 @@
             "price": "250.00",
             "quantity": 85,
             "category": 5,
-            "image": "products/mango_ice_cream.jpg",
-            "created_at": "2025-08-15T10:50:00Z"
+            "image": "images/cream.png",
+            "created_at": "2025-08-15T10:50:00Z",
+            "updated_at": "2025-08-15T10:50:00Z"
         }
     },
     {
-        "model": "mango.product",
+        "model": "products.Product",
         "pk": 20,
         "fields": {
             "name": "Mango Salsa",
@@ -303,8 +290,10 @@
             "price": "140.00",
             "quantity": 100,
             "category": 5,
-            "image": "products/mango_salsa.jpg",
-            "created_at": "2025-08-15T10:52:00Z"
+            "image": "images/salsa.png",
+            "created_at": "2025-08-15T10:52:00Z",
+            "updated_at": "2025-08-15T10:52:00Z"
+
         }
     }
 ]

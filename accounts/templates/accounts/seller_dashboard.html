@@ -1,1 +1,152 @@
 {% extends "base.html" %}
+{% load static %}
+{% block content %}
+{% load widget_tweaks %}
+{% load math_filter %}
+
+<div class="max-w-7xl mx-auto p-6">
+    <h1 class="text-2xl font-bold mb-6">Seller Dashboard</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-white rounded-lg shadow p-6">
+            <p class="text-sm text-gray-500">Monthly Gross Income</p>
+            <p class="text-3xl font-bold mt-2">৳ {{ monthly_income|floatformat:2 }}</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6">
+            <p class="text-sm text-gray-500">Yearly Gross Income</p>
+            <p class="text-3xl font-bold mt-2">৳ {{ yearly_income|floatformat:2 }}</p>
+        </div>
+    </div>
+
+
+    {% comment %} <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <h2 class="text-lg font-semibold mb-4">Add New Product</h2>
+        <form action="{% url 'product_create' %}" method="post" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {% csrf_token %}
+
+            <input type="hidden" name="quick_create" value="1" />
+
+
+            <div>
+                <label class="block text-sm">Name</label>
+                {{  quick_form.name|add_class:"w-full border rounded p-2" }}
+            </div>
+            <div>
+                <label class="block text-sm">Price</label>
+                {{  quick_form.price|add_class:"w-full border rounded p-2" }}
+            </div>
+            {% comment %} <div>
+                <label class="block text-sm">Stock</label>
+                {{  quick_form.stock|add_class:"w-full border rounded p-2" }}
+            </div> {% endcomment %}
+            {% comment %} {% if quick_form.image %}
+                <div>
+                    <label class="block text-sm">Image</label>
+                    {{  quick_form.image|add_class:"w-full border rounded p-2" }}
+                </div>
+            {% endif %}
+            <div class="md:col-span-4">
+                <button class="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700">Create</button>
+            </div>
+        </form>
+    </div> {% endcomment %} 
+
+
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold">Your Products</h2>
+            <a href="{% url 'product_create' %}" class="text-sm bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700">
+                + Add Product (Full Form)
+            </a>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+                <thead>
+                    <tr class="bg-gray-100 text-left">
+                        <th class="px-3 py-2">Name</th>
+                        <th class="px-3 py-2">Price</th>
+                        <th class="px-3 py-2">Stock</th>
+                        <th class="px-3 py-2">Actions</th>
+                        <th class="px-3 py-2">Add Qty</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in products %}
+                     <tr class="border-t">
+                        <td class="px-3 py-2 font-medium">{{ p.name }}</td>
+                        <td class="px-3 py-2">{{ p.price }}</td>
+                        <td class="px-3 py-2">
+                            <span class="px-2 py-1 rounded text-white {% if p.stock <= 0 %}bg-red-600{% elif p.stock < 5 %}bg-yellow-600{% else %}bg-emerald-600{% endif %}">
+                                {{ p.stock }}
+                            </span>
+                        </td>
+                        <td class="px-3 py-2 space-x-2">
+                            <a href="{% url 'product_update' p.id %}" class="text-blue-600 hover:underline">Edit</a>
+                            <a href="{% url 'product_delete' p.id %}" class="text-red-600 hover:underline">Delete</a>
+                        </td>
+                        <td class="px-3 py-2">
+                            <form method="post" action="{% url 'update_product_quantity' p.id %}" class="flex items-center space-x-2">
+                                {% csrf_token %}
+                                {{ stock_form.delta|add_class:"w-20 border rounded p-1" }}
+                                <button class="bg-gray-800 text-white px-3 py-1 rounded hover:bg-black">Add</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr class="text-gray-500">No products added yet.</tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="bg-white rounded-lg shadow p-6">
+     <h2 class="text-lg font-semibold mb-4">Recent Orders (Your Items)</h2>
+     <div class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+            <thead>
+                <tr class="bg-gray-100 text-left">
+                    <th class="px-3 py-2">Order #</th>
+                    <th class="px 3 py-2">Date</th>
+                    <th class="px-3 py-2">Customer</th>
+                    <th class="px-3 py-2">Product</th>
+                    <th class="px-3 py-2">Qty</th>
+                    <th class="px-3 py-2">Price</th>
+                    <th class="px-3 py-2">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+              {% for it in seller_items %}
+                <tr class="border-t">
+                    <td class="px-3 py-2">#{{ it.order.id }}</td>
+                    <td class="px-3 py-2">{{ it.order.created_at|date:"d M Y, h:i A" }}</td>
+                    <td class="px-3 py-2">{{ it.order.user.username }}</td>
+                    <td class="px-3 py-2">{{ it.product.name }}</td>
+                    <td class="px-3 py-2">{{ it.quantity }}</td>
+                    <td class="px-3 py-2">৳ {{ it.price_per_item }}</td>
+                    <td class="px-3 py-2 font-semibold">৳ {{ it.quantity|multiply:it.price_per_item }}</td>
+                </tr>
+              {% empty %}
+                <tr class="text-gray-500">No orders found.</tr>
+              {% endfor %}
+            </tbody>
+        </table>
+    </div>
+  </div>  
+  <div class="bg-white rounded-lg shadow p-6 mt-6">
+    <h2 class="text-lg font-semibold mb-4">Customers (Who bought from you)</h2>
+    <ul class="space-y-2">
+      {% for c in customers %}
+        <li class="flex justify-between border-b py-2">
+          <span>{{ c.username }} ({{ c.email }})</span>
+          <a href="#" class="text-indigo-600 hover:underline">View</a>
+        </li>
+      {% empty %}
+        <li class="text-gray-500">No customers yet.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock content %}
+

@@ -13,8 +13,6 @@ from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mango_bar.settings')
 
-application = get_wsgi_application()
+app = get_wsgi_application()
 
 
-app = application  # For Vercel compatibility
-# This line is added to ensure compatibility with Vercel's expectations for the WSGI application.

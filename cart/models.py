@@ -5,18 +5,20 @@ from products.models import Product
 User = settings.AUTH_USER_MODEL
 
 class Cart(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE,  related_name="carts")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Cart of {self.user.username}"
+        return f"Cart of {self.user}"
+    
 
 
     def total_items(self):
         return sum(item.quantity for item in self.items.all())
     
     def total_price(self):
-        return sum(item.product.price * item.quantity for item in self.items.all())
+        return sum(item.price_per_item * item.quantity for item in self.items.all())
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
@@ -27,6 +29,11 @@ class CartItem(models.Model):
 
     class Meta:
         unique_together = ("cart", "product")
+        ordering = ["-id"]
+        
+    def __str__(self):
+        return f"{self.quantity} x {getattr(self.product, 'name', str(self.product))}"
+
         
     def __str__(self):
         return f"{self.quantity} x {self.product.name}"

@@ -5,8 +5,8 @@ from .models import Category, Product
 from django.db.models import Q
 from .forms import ProductForm
 from cart.models import Cart
-from accounts.forms import StockUpdateForm
 from accounts.decorators import role_required
+from .forms import StockUpdateForm
 
 
 

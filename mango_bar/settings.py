@@ -21,6 +21,12 @@ DEBUG = False
 
 ALLOWED_HOSTS = [".vercel.app", '127.0.0.1']
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.vercel.app",
+    "http://*.127.0.0.1"
+]
+
+
 # Application definition
 
 
@@ -33,18 +39,29 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
+    'cloudinary_storage',
+    'cloudinary',
     'rest_framework.authtoken',
+    'corsheaders',
+    
     'accounts',
     'products',
     'orders',
     'widget_tweaks',
     'cart',
+    'payments',
+    'admin_panel',
+    
 ]
 
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -73,26 +90,23 @@ TEMPLATES = [
 WSGI_APPLICATION = 'mango_bar.wsgi.app'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': config('dbname'),
+#         'USER': config('user'),
+#         'PASSWORD': config('password'),
+#         'HOST': config('host'),
+#         'PORT': config('port'),
 #     }
 # }
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('dbname'),
-        'USER': config('user'),
-        'PASSWORD': config('password'),
-        'HOST': config('host'),
-        'PORT': config('port'),
-    }
-}
 
 
 # Password validation
@@ -141,15 +155,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / "static"]
-STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / "media"
-
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'rajibulislam3777@gmail.com'
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -164,9 +172,13 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly'
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
 }
+
 
 LOGIN_URL = reverse_lazy('sign-in')
 LOGIN_REDIRECT_URL = reverse_lazy('profile')
@@ -183,7 +195,10 @@ cloudinary.config(
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-STATIC_FILES_DIR = [BASE_DIR/'static']
+STATICFILES_DIR = [BASE_DIR/'static']
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATIC_FILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+
+
+CORS_ALLOW_ALL_ORIGINS = True

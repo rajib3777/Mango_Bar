@@ -1,66 +1,74 @@
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from django.contrib.auth import get_user_model, authenticate, login, logout
-from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
+from django.shortcuts import get_object_or_404
+from django.utils.http import urlsafe_base64_decode
+from django.utils.encoding import force_str
+from django.contrib.auth.tokens import default_token_generator
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
 
-User = get_user_model() 
 
-# Register API
+from .models import CustomUser
+from .serializers import RegisterSerializer, LoginSerializer, ProfileSerializer
+from .utils import send_verification_email
 
-class RegisterAPIView(generics.CreateAPIView):
-    queryset = User.objects.all()
+
+class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [permissions.AllowAny]
 
+    def perform_create(self, serializer):
+        user = serializer.save()
+        send_verification_email(user, self.request)
+        
+    
+class VerifyEmailView(APIView):
+    permission_classes = [permissions.AllowAny]
+    def get(self, request, uidb64, token):
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = get_object_or_404(CustomUser, pk=uid)
+        except Exception:
+            return Response({'detail':'Invalid link'}, status=status.HTTP_400_BAD_REQUEST)
+        if default_token_generator.check_token(user, token):
+            user.is_active = True
+            user.is_verified = True
+            user.save()
+            return Response({'detail':'Email verified. You can login.'})
+        return Response({'detail':'Invalid or expired token'},status=status.HTTP_400_BAD_REQUEST)
 
-# Login API
-class LoginAPIView(generics.GenericAPIView):
+class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
-    permission_classes = [AllowAny]
-    
-    def post(self, request, *args, **kwargs):
-        serializer_class = self.get_serializer(data=request.data)
-        serializer_class.is_valid(raise_exception=True)
-        
-        user = authenticate(
-            request,
-            username=serializer_class.validated_data["username"],
-            password=serializer_class.validated_data["password"],
-        )
-        
-        if user:
-            login(request, user)
-            return Response({
-                "message": "Login successful",
-                "user": UserSerializer(user).data
-            }),
-        return Response({"error": "Invalid credentials"},status=status.HTTP_200_OK)
-    
-    
-class LogoutAPIView(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
-    def post(self, request, *args, **kwargs):
-        logout(request)
-        return Response({"message": "Logged out successfully"}, status=status.HTTP_200_OK)
-    
-    
-class ProfileAPIView(generics.RetrieveUpdateAPIView):
-    serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        ser = self.get_serializer(data=request.data)
+        ser.is_valid(raise_exception=True)
+        user = ser.validated_data
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'refresh' : str(refresh),
+            'access' : str(refresh.access_token),
+            'role' : user.role,
+        })
 
+class LogoutView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def post(self, request):
+        try:
+            refresh = request.data.get('refresh')
+            token = RefreshToken(refresh)
+            token.blacklist()
+            return Response({'detail':'Logged out'}, status=status.HTTP_205_RESET_CONTENT)
+        except:
+            return Response({'detail':'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class ProfileView(generics.RetrieveUpdateAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
     def get_object(self):
         return self.request.user
-    
-    
-class UserDetailAPIView(generics.RetrieveAPIView):
-    serializer_class = UserSerializer
-    queryset = User.objects.all()
-    permission_classes = [IsAuthenticated]
-    
-    def get_object(self):
-        return self.request.user
-    
-    
+
+
 

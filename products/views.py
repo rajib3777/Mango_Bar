@@ -42,7 +42,7 @@ def add_product(request):
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             product = form.save(commit=False)
-            product.seller = request.user 
+            product.Seller = request.user 
             product.save()
             messages.success(request, "Product Created Successfully!")
             return redirect("product_list")
@@ -69,7 +69,7 @@ def remove_from_cart(request, cart_id):
 def product_update(request, pk):
     product = get_object_or_404(Product, pk=pk)
     
-    if request.user.role != "seller" or request.user != product.seller:
+    if request.user.role != "Seller" or request.user != product.Seller:
         messages.error(request,"You are not allowed to update this product.")
         return redirect("product_list")
     
@@ -96,7 +96,7 @@ def product_update(request, pk):
 def product_delete(request, pk):
     product = get_object_or_404(Product, pk=pk)
     
-    if request.user != product.seller and not request.user.is_superuser:
+    if request.user != product.Seller and not request.user.is_superuser:
         messages.error(request,"You are not allowed to delete this product.")
         return redirect("product_list")
     
@@ -114,9 +114,9 @@ def product_delete(request, pk):
 def update_product_quantity(request, product_id):
     
     product = get_object_or_404(Product, id=product_id)
-    if request.user.role == "Seller" and product.seller != request.user:
+    if request.user.role == "Seller" and product.Seller != request.user:
         messages.error(request,"You can only update your own product stock.")
-        return redirect('seller_dashboard')
+        return redirect('Seller_dashboard')
     
     if request.method == "POST":
         form = StockUpdateForm(request.POST)
@@ -128,4 +128,4 @@ def update_product_quantity(request, product_id):
         else:
             messages.error(request, "Invalid quantity.")
             
-    return redirect('admin-dashboard' if request.user.role == "Admin" or request.user.is_superuser else 'seller-dashboard')
+    return redirect('admin-dashboard' if request.user.role == "Admin" or request.user.is_superuser else 'Seller-dashboard')

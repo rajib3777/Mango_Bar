@@ -7,8 +7,8 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "seller", "price", "category", "created_at")
-    list_filter = ("category", "seller")
+    list_display = ("id", "name", "Seller", "price", "category", "created_at")
+    list_filter = ("category", "Seller")
     search_fields = ("name", "description")
 
 @admin.register(Review)

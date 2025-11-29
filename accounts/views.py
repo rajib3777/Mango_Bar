@@ -74,9 +74,17 @@ def sign_up(request):
                     token = default_token_generator.make_token(user)
                     uid = urlsafe_base64_encode(force_bytes(user.pk))
                     
+                    print("Generated token:", token,flush=True)
+                    print("Generated uid:", uid,flush=True)
+                    print("User email:", user.email,flush=True)
+                    
                     activation_link = request.build_absolute_uri(
                         reverse_lazy('activate-user', kwargs={'uidb64': uid, 'token': token})
                     )
+                    
+                    print("Generated token:", token,flush=True)
+                    print("Generated uid:", uid,flush=True)
+                    print("User email:", user.email,flush=True)
                     
                     subject = 'Activate your Mango Bar account'
                     message = render_to_string('accounts/activation_mail.html', {
@@ -92,25 +100,23 @@ def sign_up(request):
                     return redirect('sign-in')
 
                 except Exception as e:
-                    print("❌ Email sending failed:", e)
+                    print("sign_up failed", flush=True)
+                    user.is_active = False
+                    print("Email sending failed:", e)
                     user.delete()
                     messages.error(request, 'Signup failed because activation mail could not be sent. Try again or contact admin.')
                     return redirect('sign-up')
 
             except Exception as e:
-                print("❌ Error during signup:", e)
+                print("Error during signup:", e)
                 messages.error(request, f"Something went wrong: {e}")
                 return render(request, 'accounts/register.html', {"form": form})
 
         else:
-            print("❌ Form errors:", form.errors)
+            print("Form errors:", form.errors)
             return render(request, 'accounts/register.html', {"form": form})
         
     return render(request, 'accounts/register.html', {"form": form})
-
-    
-
-
 
 
 @login_required
@@ -143,7 +149,7 @@ def activate_user(request, uidb64, token):
     else:
         messages.error(request, "Your account activation link is invalid or has expired.")
         return redirect('sign-up')
-    
+
 
 def sign_in(request):
     form = LoginForm()
@@ -164,27 +170,24 @@ def sign_in(request):
                 return redirect('seller-dashboard')
             else:
                 return redirect('customer-dashboard')
-            
-            
         else:
             messages.error(request, "Invalid username or password.")
             
     return render(request, 'accounts/login.html', {'form': form})
     
 
-    
 @login_required
 @role_required('Admin')
 def admin_dashboard(request):
     
     monthly = (
-        OrderItem.objects
-        .annotate(month=TruncMonth('order__created_at'))
+        Order.objects
+        .annotate(month=TruncMonth('created_at'))
         .values('month')
-        .annotate(total=Sum(F('quantity') * F('price_per_item')))
+        .annotate(total=Sum(F('items__quantity') * F('items__price_per_item')))
         .order_by('month')
-        
     )
+    
     
     chart_labels = [m['month'].strftime("%b %Y") if m['month'] else 'Unknown' for m in monthly]
     chart_values = [float(m['total'] or 0) for m in monthly]
@@ -209,7 +212,7 @@ def admin_dashboard(request):
         else:
             messages.error(request, "Please correct the errors in stock update form.")
             stock_form = form
-    
+            
     context = {
         "chart_labels": chart_labels,
         "chart_values": chart_values,
@@ -219,10 +222,9 @@ def admin_dashboard(request):
         "stock_form": stock_form,
         "quick_form": quick_form,
     }
-    
     return render(request, "accounts/admin_dashboard.html", context)
-
-
+    
+    
 
 @login_required
 @role_required('Seller')
@@ -267,7 +269,7 @@ def seller_dashboard(request):
 
 
 @login_required
-@role_required('Admin','Seller','Customer')
+@role_required('Customer', 'Seller', 'Admin')
 def customer_dashboard(request):
     orders = Order.objects.filter(user=request.user).order_by('-created_at')
 
@@ -286,14 +288,18 @@ def customer_dashboard(request):
     return render(request, "accounts/customer_dashboard.html", context)
 
 
+
+
 @login_required
-@user_passes_test(lambda u: u.groups.filter(name='Customer').exists())
+@user_passes_test(lambda u: u.groups.filter(name='Seller').exists())
 def profile_view(request):
     user = request.user
-    orders = Order.objects.filter(customer=user)
+    profile = SellerProfile.objects.get(user=user)
+    products = Product.objects.filter(seller=user)
     context = {
         'user': user,
-        'orders': orders,
+        'profile': profile,
+        'products': products,
     }
     return render(request, 'accounts/profile.html', context)
 
@@ -307,6 +313,7 @@ def my_orders(request):
     }
     return render(request, 'accounts/my_orders.html', context)
 
+
 class EditprofileView(LoginRequiredMixin,SuccessMessageMixin,UpdateView):
     model = CustomUser
     form_class = Profileupdateform
@@ -317,7 +324,7 @@ class EditprofileView(LoginRequiredMixin,SuccessMessageMixin,UpdateView):
     def get_object(self):
         return self.request.user
 
-    
+
 def reset_password(request):
     if request.method == 'POST':
         form = ResetPasswordForm(request.POST)
@@ -326,16 +333,16 @@ def reset_password(request):
             try:
                 user = CustomUser.objects.get(email=user_email)
 
-                # 🔑 Token তৈরি
+                
                 token = default_token_generator.make_token(user)
                 uid = urlsafe_base64_encode(force_bytes(user.pk))
 
-                # 🔗 Reset link বানানো
+                
                 reset_link = request.build_absolute_uri(
                     reverse_lazy('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})
                 )
 
-                # 📧 ইমেইল তৈরি
+                
                 subject = 'Reset your password'
                 message = render_to_string('accounts/password_reset_mail.html', {
                     'user': user,
@@ -346,17 +353,20 @@ def reset_password(request):
                 mail.attach_alternative(message, 'text/html')
                 mail.send()
 
-                messages.success(request, '✅ Password reset link sent to your email.')
+                messages.success(request, 'Password reset link sent to your email.')
                 return redirect('sign-in')
 
             except CustomUser.DoesNotExist:
-                messages.error(request, '❌ No user found with this email address.')
+                messages.error(request, 'No user found with this email address.')
+                
     else:
         form = ResetPasswordForm()
-
+        
     return render(request, 'accounts/password_reset_form.html', {'form': form})
+    
 
 def reset_password_confirm(request, uidb64, token):
+    
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = CustomUser.objects.get(id=uid)
@@ -368,6 +378,7 @@ def reset_password_confirm(request, uidb64, token):
                 if new_password == confirm_password:
                     user.set_password(new_password)
                     user.save()
+                    messages.success(request, 'Your password has been reset successfully. You can now log in.')
                     return redirect('sign-in')
                 else:
                     messages.error(request, 'Passwords do not match.')
@@ -376,44 +387,46 @@ def reset_password_confirm(request, uidb64, token):
         else:
             messages.error(request, 'Invalid token or user ID.')
             return redirect('reset_password')
+        
     except CustomUser.DoesNotExist:
         messages.error(request, 'User not found.')
         return redirect('reset_password')
     
-
+    
 
 @login_required
 def edit_profile(request):
     
-    profile,created = SellerProfile.objects.get_or_create(user=request.user)
-    
+    profile,created = CustomerProfile.objects.get_or_create(user=request.user)
     if request.method == "POST":
         print("FILES:", request.FILES)
         user_form = UserUpdateForm(request.POST, request.FILES, instance=request.user)
         profile_form = CustomerProfileForm(request.POST, instance=profile)
-
+        
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            messages.success(request, "✅ Profile updated successfully!")
+            messages.success(request, "Profile updated successfully!")
 
             return redirect("user_profile", user_id=request.user.id)
+        
         else:
-            print("❌ User form errors:", user_form.errors)
-            print("❌ Profile form errors:", profile_form.errors)
-
+            print("User form errors:", user_form.errors)
+            print("Profile form errors:", profile_form.errors)
+            
     else:
         user_form = UserUpdateForm(instance=request.user)
         profile_form = CustomerProfileForm(instance=profile)
+        
         
     return render(request, "accounts/edit_profile.html", {
         "user_form": user_form,
         "profile_form": profile_form,
     })
-\
 
 
-class UserPasswordChangeView(LoginRequiredMixin, SuccessMessageMixin, FormView):
+
+class UserpasswordChangeView(LoginRequiredMixin, SuccessMessageMixin, FormView):
     form_class = PasswordChangeForm
     template_name = 'accounts/change_password.html'
     success_url = reverse_lazy('profile')
@@ -429,7 +442,7 @@ class UserPasswordChangeView(LoginRequiredMixin, SuccessMessageMixin, FormView):
         update_session_auth_hash(self.request, user)
         messages.success(self.request, self.success_message)
         return super().form_valid(form)
-    
+
 
 
 @login_required
@@ -485,3 +498,5 @@ def user_profile(request, user_id):
     }
 
     return render(request, template, context)
+    
+    

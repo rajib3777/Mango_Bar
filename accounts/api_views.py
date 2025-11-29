@@ -9,7 +9,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 
 from .models import CustomUser
-from .serializers import RegisterSerializer, LoginSerializer, ProfileSerializer
+from .serializers import RegisterSerializer, LoginSerializer, ProfileSerializer, changePasswordSerializer
 from .utils import send_verification_email
 
 
@@ -69,6 +69,43 @@ class ProfileView(generics.RetrieveUpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     def get_object(self):
         return self.request.user
+
+
+class ChangePasswordView(generics.UpdateAPIView):
+    serializer_class = changePasswordSerializer  
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+    
+    def update(self, request, *args, **kwargs):
+        user = self.get_object()
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        user.set_password(serializer.validated_data['password'])
+        user.save()
+        
+        return Response({'detail':'Password updated successfully'}, status=status.HTTP_200_OK)
+    
+class EditProfileView(generics.UpdateAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+    
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+    
+    def perform_update(self, serializer):
+        serializer.save()
+    
 
 
 

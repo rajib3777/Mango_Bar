@@ -12,6 +12,7 @@ urlpatterns = [
     path('cart/', include('cart.urls')),
     path('orders/', include('orders.urls')),
     path('api/', include('products.api_urls')),
+    path('admin-panel/', include('admin_panel.urls')),
     path('api-auth/', include('rest_framework.urls')),
     path('payments/', include('payments.urls')),
     path('home/', TemplateView.as_view(template_name="home.html"), name='home'),

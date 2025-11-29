@@ -45,4 +45,12 @@ class ProfileSerializer(serializers.ModelSerializer):
         read_only_fields = ['email','role','is_verified']
 
 
+class changePasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(write_only=True, required=True)
+    password2 = serializers.CharField(write_only=True, required=True)
+    
+    def validate(self, data):
+        if data['password'] != data['password2']:
+            raise serializers.ValidationError("Passwords must match.")
+        return data
 

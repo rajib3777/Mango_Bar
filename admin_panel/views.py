@@ -2,7 +2,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from django.db.models import Count
-from products.models import Mango
+from products.models import Product as Mango 
 from orders.models import Order
 from .serializers import MangoAdminSerializer, OrderAdminSerializer
 from rest_framework import status
@@ -73,7 +73,7 @@ def mango_detail(request, pk):
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
 def admin_orders_list(request):
-    qs = Order.objects.select_related('buyer','mango').order_by('-created_at')
+    qs = Order.objects.select_related('user').order_by('-created_at')
     serializer = OrderAdminSerializer(qs, many=True)
     return Response(serializer.data)
 
@@ -102,3 +102,6 @@ def admin_set_order_status(request, pk):
         except Exception:
             pass
     return Response(OrderAdminSerializer(order).data)
+
+
+

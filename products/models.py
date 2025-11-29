@@ -30,7 +30,7 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
-    quantity = models.PositiveIntegerField(default=0)
+    # quantity = models.PositiveIntegerField(default=0)
     image = models.ImageField(upload_to="products/main_images/", null=True, blank=True)
 
     def __str__(self):

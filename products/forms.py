@@ -5,7 +5,7 @@ from .models import Product
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ["name", "description", "price", "category", "image","quantity"]
+        fields = ["name", "description", "price", "category", "image","stock"]
         
         
         widgets = {
@@ -14,7 +14,8 @@ class ProductForm(forms.ModelForm):
             "price": forms.NumberInput(attrs={"class": "form-control"}),
             "category": forms.Select(attrs={"class": "form-control"}),
             "image": forms.FileInput(attrs={"class": "form-control"}),
-            "quantity": forms.NumberInput(attrs={"class": "form-control"}),
+            # "quantity": forms.NumberInput(attrs={"class": "form-control"}),
+            "stock": forms.NumberInput(attrs={"class": "form-control"}),
         }
         
         
@@ -23,10 +24,10 @@ class ProductForm(forms.ModelForm):
 class StockUpdateForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['quantity']
+        fields = ['stock']
         
         
-    quantity = forms.IntegerField(
+    stock = forms.IntegerField(
         min_value=0,
         label="Update Stock Quantity",
         widget=forms.NumberInput(attrs={
@@ -35,7 +36,7 @@ class StockUpdateForm(forms.ModelForm):
         })
     )
     
-    def clean_quantity(self):
+    def clean_stock(self):
         qty = self.cleaned_data.get('quantity')
         if qty < 0:
             raise forms.ValidationError("Stock quantity cannot be negative.")

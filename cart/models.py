@@ -30,12 +30,12 @@ class CartItem(models.Model):
     class Meta:
         unique_together = ("cart", "product")
         ordering = ["-id"]
-        
-    def __str__(self):
-        return f"{self.quantity} x {getattr(self.product, 'name', str(self.product))}"
 
         
     def __str__(self):
         return f"{self.quantity} x {self.product.name}"
+    
+    def total_price(self):
+        return self.price_per_item * self.quantity
     
 

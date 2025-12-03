@@ -53,7 +53,7 @@ class CartItemViewSet(viewsets.ModelViewSet):
             cart_item.quantity += quantity
             cart_item.save()
 
-        return Response(CartItemSerializer(cart_item.cart).data, status=status.HTTP_201_CREATED)
+        return Response(CartItemSerializer(cart_item).data, status=status.HTTP_201_CREATED)
     
     def update(self, request, pk=None):
         try:

@@ -37,7 +37,7 @@ class StockUpdateForm(forms.ModelForm):
     )
     
     def clean_stock(self):
-        qty = self.cleaned_data.get('quantity')
+        qty = self.cleaned_data.get('stock')
         if qty < 0:
             raise forms.ValidationError("Stock quantity cannot be negative.")
         return qty

@@ -4,36 +4,43 @@
         "pk": 1,
         "fields": { "name": "Premium", "slug": "premium" }
     },
+
     {
         "model": "products.Category",
         "pk": 2,
         "fields": { "name": "Standard", "slug": "standard" }
     },
+
     {
         "model": "products.Category",
         "pk": 3,
         "fields": { "name": "Organic", "slug": "organic" }
     },
+
     {
         "model": "products.Category",
         "pk": 4,
         "fields": { "name": "Raw", "slug": "raw" }
     },
+
     {
         "model": "products.Category",
         "pk": 5,
         "fields": { "name": "Gift", "slug": "gift" }
     },
+
     {
         "model": "products.Category",
         "pk": 6,
         "fields": { "name": "Processed", "slug": "processed" }
     },
+
     {
         "model": "products.Category",
         "pk": 7,
         "fields": { "name": "Specialty" , "slug": "specialty" }
     },
+
     {
         "model": "products.Category",
         "pk": 8,
@@ -47,12 +54,13 @@
             "name": "Himsagar Mango",
             "description": "Sweet, fiberless mango variety from Rajshahi, known for its aroma and smooth texture.",
             "price": "350.00",
-            "quantity": 100,
+            "stock": 100,
             "category": 1,
             "image": "images/himsha.jpg",
             "created_at": "2025-08-15T10:00:00Z"
         }
     },
+
     {
         "model": "products.Product",
         "pk": 2,
@@ -60,13 +68,14 @@
             "name": "Langra Mango",
             "description": "Tangy-sweet mango with a unique flavor, perfect for juice and desserts.",
             "price": "300.00",
-            "quantity": 120,
+            "stock": 120,
             "category": 1,
             "image": "images/langra.jpeg",
             "created_at": "2025-08-15T10:05:00Z",
             "updated_at": "2025-08-15T10:05:00Z"
         }
     },
+
     {
         "model": "products.Product",
         "pk": 3,
@@ -74,7 +83,7 @@
             "name": "Surjapuri Mango",
             "description": "A rare premium mango variety, known for its vibrant color and fragrance.",
             "price": "400.00",
-            "quantity": 60,
+            "stock": 60,
             "category": 1,
             "image": "images/surja.jpg",
             "created_at": "2025-08-15T10:08:00Z",
@@ -90,13 +99,14 @@
             "name": "Amrapali Mango",
             "description": "Hybrid of Dasheri and Neelum, rich in sweetness and bright orange flesh.",
             "price": "280.00",
-            "quantity": 150,
+            "stock": 150,
             "category": 2,
             "image": "images/amrapal.jpg",
             "created_at": "2025-08-15T10:10:00Z",
             "updated_at": "2025-08-15T10:10:00Z"
         }
     },
+
     {
         "model": "products.Product",
         "pk": 5,
@@ -104,13 +114,14 @@
             "name": "Fazli Mango",
             "description": "Large-sized mango variety from Chapai Nawabganj, perfect for pulp and juice.",
             "price": "250.00",
-            "quantity": 80,
+            "stock": 80,
             "category": 2,
             "image": "images/fazli.jpg",
             "created_at": "2025-08-15T10:15:00Z",
             "updated_at": "2025-08-15T10:15:00Z"
         }
     },
+
     {
         "model": "products.Product",
         "pk": 6,
@@ -118,7 +129,7 @@
             "name": "Gopalbhog Mango",
             "description": "Popular variety with a sweet and juicy taste, available in mid-season.",
             "price": "270.00",
-            "quantity": 95,
+            "stock": 95,
             "category": 2,
             "image": "images/quality.jpg",
             "created_at": "2025-08-15T10:18:00Z",
@@ -134,13 +145,14 @@
             "name": "Chemical-Free Mango Pack",
             "description": "A selection of fresh, chemical-free mangoes directly from the orchard.",
             "price": "500.00",
-            "quantity": 50,
+            "stock": 50,
             "category": 3,
             "image": "images/mango_farm.jpg",
             "created_at": "2025-08-15T10:20:00Z",
             "updated_at": "2025-08-15T10:20:00Z"
         }
     },
+
     {
         "model": "products.Product",
         "pk": 9,
@@ -148,7 +160,7 @@
             "name": "Green Mango (Pickle Special)",
             "description": "Fresh raw mangoes, ideal for making achar/pickle.",
             "price": "150.00",
-            "quantity": 200,
+            "stock": 200,
             "category": 4,
             "image": "images/green.png",
             "created_at": "2025-08-15T10:25:00Z",
@@ -162,13 +174,14 @@
             "name": "Eco-Friendly Mango Gift Box",
             "description": "Premium mangoes packed in an eco-friendly recyclable gift box.",
             "price": "800.00",
-            "quantity": 30,
+            "stock": 30,
             "category": 5,
             "image": "images/gift.jpg",
             "created_at": "2025-08-15T10:30:00Z",
             "updated_at": "2025-08-15T10:30:00Z"
         }
     },
+
     {
         "model": "products.Product",
         "pk": 12,
@@ -176,13 +189,14 @@
             "name": "Luxury Mango Hamper",
             "description": "Assorted premium mangoes in a luxury hamper for special occasions.",
             "price": "1200.00",
-            "quantity": 20,
+            "stock": 20,
             "category": 3,
             "image": "images/lux.jpg",
             "created_at": "2025-08-15T10:33:00Z",
             "updated_at": "2025-08-15T10:33:00Z"
         }
     },
+
     {
         "model": "products.Product",
         "pk": 13,
@@ -190,13 +204,14 @@
             "name": "Mango Smoothie Pack",
             "description": "A pack of fresh mangoes perfect for making smoothies and shakes.",
             "price": "350.00",
-            "quantity": 75,
+            "stock": 75,
             "category": 2,
             "image": "images/smoth.png",
             "created_at": "2025-08-15T10:35:00Z",
             "updated_at": "2025-08-15T10:35:00Z"
         }
     },
+
     {
         "model": "products.Product",
         "pk": 14,
@@ -204,13 +219,14 @@
             "name": "Mango Pulp",
             "description": "Pure mango pulp, ideal for desserts and beverages.",
             "price": "200.00",
-            "quantity": 100,
+            "stock": 100,
             "category": 4,
             "image": "images/pulp.png",
             "created_at": "2025-08-15T10:38:00Z",
             "updated_at": "2025-08-15T10:38:00Z"
         }
     },
+
     {
         "model": "products.Product",
         "pk": 15,
@@ -218,13 +234,14 @@
             "name": "Mango Chutney",
             "description": "Homemade mango chutney with a blend of spices, perfect for snacks.",
             "price": "180.00",
-            "quantity": 90,
+            "stock": 90,
             "category": 5,
             "image": "images/chutney.png",
             "created_at": "2025-08-15T10:40:00Z",
             "updated_at": "2025-08-15T10:40:00Z"
         }
     },
+
     {
         "model": "products.Product",
         "pk": 16,
@@ -232,13 +249,14 @@
             "name": "Mango Jam",
             "description": "Sweet mango jam made from fresh mangoes, perfect for breakfast.",
             "price": "160.00",
-            "quantity": 110,
+            "stock": 110,
             "category": 5,
             "image": "images/jam.png",
             "created_at": "2025-08-15T10:42:00Z",
             "updated_at": "2025-08-15T10:42:00Z"
         }
     },
+
     {
         "model": "products.Product",
         "pk": 17,
@@ -246,13 +264,14 @@
             "name": "Mango Sorbet",
             "description": "Refreshing mango sorbet made from ripe mangoes, perfect for summer.",
             "price": "220.00",
-            "quantity": 65,
+            "stock": 65,
             "category": 5,
             "image": "images/sorbat.png",
             "created_at": "2025-08-15T10:45:00Z",
             "updated_at": "2025-08-15T10:45:00Z"
         }
     },
+
     {
         "model": "products.Product",
         "pk": 18,
@@ -260,13 +279,14 @@
             "name": "Mango Juice",
             "description": "Freshly squeezed mango juice, rich in vitamins and flavor.",
             "price": "120.00",
-            "quantity": 130,
+            "stock": 130,
             "category": 5,
             "image": "images/juice.png",
             "created_at": "2025-08-15T10:48:00Z",
             "updated_at": "2025-08-15T10:48:00Z"
         }
     },
+
     {
         "model": "products.Product",
         "pk": 19,
@@ -274,13 +294,14 @@
             "name": "Mango Ice Cream",
             "description": "Creamy mango ice cream made from natural ingredients.",
             "price": "250.00",
-            "quantity": 85,
+            "stock": 85,
             "category": 5,
             "image": "images/cream.png",
             "created_at": "2025-08-15T10:50:00Z",
             "updated_at": "2025-08-15T10:50:00Z"
         }
     },
+    
     {
         "model": "products.Product",
         "pk": 20,
@@ -288,7 +309,7 @@
             "name": "Mango Salsa",
             "description": "Spicy mango salsa, perfect for dipping or as a topping.",
             "price": "140.00",
-            "quantity": 100,
+            "stock": 100,
             "category": 5,
             "image": "images/salsa.png",
             "created_at": "2025-08-15T10:52:00Z",

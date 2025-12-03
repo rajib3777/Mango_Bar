@@ -9,6 +9,7 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ["id","name","slug"]
         
 class ProductSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField()
     category = CategorySerializer(read_only=True)
     
     category_id = serializers.PrimaryKeyRelatedField(

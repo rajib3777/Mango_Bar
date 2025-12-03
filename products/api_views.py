@@ -4,12 +4,14 @@ from rest_framework.decorators import api_view, permission_classes
 from .models import Product,Category
 from .serializers import ProductSerializer,CategorySerializer
 from django.shortcuts import get_object_or_404
+from .permissions import IsAdminSeller
+
 
 
 class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.all().order_by("-created_at")
     serializer_class = ProductSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminSeller]
     
     
     def get_queryset(self):

@@ -1,5 +1,6 @@
 # Mango Bar - E commerce DRF project
 
+<<<<<<< HEAD
 features:
 
 - Customer user Model with Admin / Seller / Customer Roles
@@ -279,3 +280,7 @@ This project is licensed under the MIT License.
 ### Author
 [MD.Rajibul Islam Shuvo]
 (https://github.com/rajib3777/Mango_Bar)
+=======
+##ABOUT
+
+>>>>>>> ce51f3f2d4d0f4657e8bafa166695c3aca19621a

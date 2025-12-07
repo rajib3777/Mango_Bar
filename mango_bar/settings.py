@@ -17,7 +17,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-iwsq$8l8+6*nh#!8lmabf9=_y4$m=i#b9_qbu!imqol1t*(%k)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [".vercel.app", '127.0.0.1']
 
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'cloudinary',
     'rest_framework.authtoken',
     'corsheaders',
+    'drf_yasg',
     
     'accounts',
     'products',
@@ -183,9 +184,9 @@ REST_FRAMEWORK = {
 }
 
 
-LOGIN_URL = reverse_lazy('sign-in')
+LOGIN_URL = reverse_lazy('accounts:login')
 LOGIN_REDIRECT_URL = reverse_lazy('profile')
-LOGOUT_REDIRECT_URL = reverse_lazy('sign-in')
+LOGOUT_REDIRECT_URL = reverse_lazy('accounts:login')
 
 
       

@@ -19,7 +19,7 @@ SECRET_KEY = 'django-insecure-iwsq$8l8+6*nh#!8lmabf9=_y4$m=i#b9_qbu!imqol1t*(%k)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [".vercel.app", '127.0.0.1']
+ALLOWED_HOSTS = [".vercel.app", '127.0.0.1','localhost']
 
 CSRF_TRUSTED_ORIGINS = [
     "https://*.vercel.app",
@@ -29,9 +29,10 @@ CSRF_TRUSTED_ORIGINS = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "http://127.0.0.1:5173",
 ]
 
-CORS_ALLOWED_CREDENTIALS = True
+CORS_ALLOW_CREDENTIALS = True
 
 
 
@@ -212,5 +213,3 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
-
-CORS_ALLOW_ALL_ORIGINS = True

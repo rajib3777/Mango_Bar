@@ -24,6 +24,7 @@ ALLOWED_HOSTS = [".vercel.app", '127.0.0.1']
 CSRF_TRUSTED_ORIGINS = [
     "https://*.vercel.app",
     "http://*.127.0.0.1"
+    "http://localhost:5173"
 ]
 
 

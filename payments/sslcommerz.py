@@ -15,6 +15,9 @@ def generator_trangection_id( size=6, chars=string.ascii_uppercase + string.digi
 def sslcommerz_payment_gateway(request, name, amount):
  
     gateway = PaymentGateway.objects.all().first()
+    if not gateway:
+        raise Exception("Payment Gateway credentials not configured in the database.")
+        
     cradentials = {'store_id': gateway.store_id,
             'store_pass': gateway.store_pass, 'issandbox': True} 
             
@@ -23,15 +26,20 @@ def sslcommerz_payment_gateway(request, name, amount):
     body['total_amount'] = amount
     body['currency'] = "BDT"
     body['tran_id'] = generator_trangection_id()
-    body['success_url'] = 'http://localhost:8000/payment/success/'
-    body['fail_url'] = 'http://localhost:8000/payment/payment/faild/'
-    body['cancel_url'] = 'http://localhost:8000/payment'
+    
+    # These URLs are what SSLCommerz hits with POST data (webhook-like)
+    body['success_url'] = request.build_absolute_uri('/payments/success/')
+    body['fail_url'] = request.build_absolute_uri('/payments/fail/')
+    body['cancel_url'] = request.build_absolute_uri('/payments/cancel/')
+    
     body['emi_option'] = 0
     body['cus_name'] = name
-    body['cus_email'] = 'request.data["email"]'
-    body['cus_phone'] = 'request.data["phone"]'
-    body['cus_add1'] = 'request.data["address"]'
-    body['cus_city'] = 'request.data["address"]'
+    
+    # Try fetching details from request user, else use default dummy data for sandbox
+    body['cus_email'] = request.user.email if hasattr(request, 'user') and request.user.is_authenticated else 'test@example.com'
+    body['cus_phone'] = getattr(request.user, 'phone', '01711111111') if hasattr(request, 'user') and request.user.is_authenticated else '01711111111'
+    body['cus_add1'] = getattr(request.user, 'address', 'Dhaka') if hasattr(request, 'user') and request.user.is_authenticated else 'Dhaka'
+    body['cus_city'] = 'Dhaka'
     body['cus_country'] = 'Bangladesh'
     body['shipping_method'] = "NO"
     body['multi_card_name'] = ""
@@ -42,4 +50,8 @@ def sslcommerz_payment_gateway(request, name, amount):
     body['value_a'] = name
 
     response = sslcommez.createSession(body)
-    return 'https://sandbox.sslcommerz.com/gwprocess/v4/gw.php?Q=pay&SESSIONKEY=' + response["sessionkey"]
+    
+    if "sessionkey" in response:
+        return 'https://sandbox.sslcommerz.com/gwprocess/v4/gw.php?Q=pay&SESSIONKEY=' + response["sessionkey"]
+    else:
+        raise Exception("Failed to generate SSLCommerz session: " + str(response))

@@ -25,7 +25,7 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
-    path('products/', include('products.urls')),
+    # Legacy HTML product URLs removed
     path('cart/', include('cart.urls')),
     path('orders/', include('orders.urls')),
     path('api/', include('products.api_urls')),

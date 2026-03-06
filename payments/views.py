@@ -58,10 +58,10 @@ class CheckoutSuccessView(APIView):
                 risk_level=data.get('risk_level'),
             )
             # Redirect to React Frontend Success Page
-            return redirect('http://localhost:5173/payment/success')
+            return redirect(f"{settings.FRONTEND_URL}/payment/success")
         except Exception as e:
             # If transaction fails to save, redirect to failure page or return error string
-            return redirect('http://localhost:5173/payment/fail')
+            return redirect(f"{settings.FRONTEND_URL}/payment/fail")
 
 @method_decorator(csrf_exempt, name='dispatch')
 class CheckoutFailView(APIView):
@@ -69,11 +69,11 @@ class CheckoutFailView(APIView):
 
     def post(self, request, *args, **kwargs):
         # SSLCommerz posts data even on failure
-        return redirect('http://localhost:5173/payment/fail')
+        return redirect(f"{settings.FRONTEND_URL}/payment/fail")
 
 @method_decorator(csrf_exempt, name='dispatch')
 class CheckoutCancelView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
-        return redirect('http://localhost:5173/payment/cancel')
+        return redirect(f"{settings.FRONTEND_URL}/payment/cancel")

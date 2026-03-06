@@ -34,10 +34,6 @@ urlpatterns = [
     path('payments/', include('payments.urls')),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    path('home/', TemplateView.as_view(template_name="home.html"), name='home'),
-    path('about/', TemplateView.as_view(template_name="about.html"), name='about'),
-    path('contact/', TemplateView.as_view(template_name="contact.html"), name='contact'),
-    path('settings/',TemplateView.as_view(template_name="settings.html"), name='settings'),
 ]
 
 
